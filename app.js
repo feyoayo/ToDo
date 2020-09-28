@@ -47,6 +47,7 @@ const tasks = [
   const inputTitle = form.elements["title"];
   const inputBody = form.elements["body"];
   const notCompleted = document.getElementById("notCompleted");
+  const allTaskButton = document.getElementById("allTasks");
 
   //?Events
   renderAllTasks(objOfTasks); //Вызываем фукнцию,  и передаем в неё наш объект объектов, созданный выше
@@ -54,6 +55,8 @@ const tasks = [
   listContainer.addEventListener("click", onDeleteHandler);
   listContainer.addEventListener("click", onCompleteHandler);
   notCompleted.addEventListener("click", showUncompletedTasks);
+  allTaskButton.addEventListener("click", showAllTasksHandler);
+
   //? Functions
   function renderAllTasks(tasksList) {
     //! Функция прорисовывает наши таски на странице из полученных значений
@@ -71,6 +74,8 @@ const tasks = [
     });
     listContainer.appendChild(fragments);
     completedSeeingTasks();
+    emptyTaskText(objOfTasks);
+    notEmptyTaskText(objOfTasks);
   }
 
   function listItemTemplate({ _id, title, body } = {}) {
@@ -137,7 +142,7 @@ const tasks = [
     //Добавляем его в самое начало нашего списка задач
     listContainer.insertAdjacentElement("afterbegin", listItem);
     form.reset(); // После наполнения формы и передачи данных очищает инпуты до изначальных значений
-    notEmptyTaskText(); // Подключаем функцию которая убирает сообщение что нет добавленых тасков
+    notEmptyTaskText(objOfTasks); // Подключаем функцию которая убирает сообщение что нет добавленых тасков
   }
 
   function createNewTask(title, body) {
@@ -183,54 +188,63 @@ const tasks = [
       const id = parent.dataset.taskId;
       objOfTasks[id].completed = false;
       parent.classList.toggle("complete-class");
-      let isComplete = objOfTasks[id].completed;
+      let isComplete = objOfTasks[id];
       if (parent.classList.contains("complete-class")) {
-        isComplete = true;
-        console.log(isComplete);
+        isComplete.completed = true;
       } else if (!parent.classList.contains("complete-class")) {
-        isComplete = false;
-        console.log(isComplete);
+        isComplete.completed = false;
       }
-      // completedSeeingTasks();
+      completedSeeingTasks();
     }
   }
   function completedSeeingTasks() {
+    //! Функция собирает завершенные таски и сразу их делает зелеными и ставит в конец списка
     listContainer.querySelectorAll("li").forEach((item) => {
       let id = item.dataset.taskId;
       if (objOfTasks[id].completed == true) {
         item.classList.add("complete-class");
+        listContainer.insertAdjacentElement("beforeend", item);
       }
     });
   }
 
   function emptyTaskText() {
     //! Функция проверяет что наш объект пустой, и если да, то выводит сообщения о том что не было создано тасков
-
+    let li = document.querySelectorAll(".list-group-item");
     emptyTitle.classList.add("header_show");
     emptyTitle.textContent = "Nothing here yet...";
     emptyTitle.classList.add("emptyHeader");
     listContainer.appendChild(emptyTitle);
-    if (Object.entries(objOfTasks).length === 0) {
+    if (Object.values(objOfTasks).length === 0 || li.length === 0) {
       // emptyTitle.classList.remove("header_show");
       emptyTitle.style.display = "block";
       console.log("zero");
     }
   }
-  function notEmptyTaskText() {
+  function notEmptyTaskText(obj) {
     //! Функция проверяет: если есть хоть 1 таск то убирает надпись о том, что список задач пустой
-    if (Object.entries(objOfTasks).length > 0) {
+    if (Object.entries(obj).length > 0) {
       emptyTitle.style.display = "none";
     }
   }
   function showUncompletedTasks() {
-    let li = listContainer.querySelectorAll("li");
-    li.forEach((item) => {
-      if (item.classList.contains("complete-class")) {
-        console.log(item);
-        item.remove();
+    //! Функция обработчик кнопки "Not Completed" при нажатии рендерит новый объект в котором все задачи еще не выполнены
+
+    const listGroup = document.querySelectorAll(".list-group-item"); // Собрали все прорисованные(текущие) Лишки
+    [...listGroup].forEach((el) => {
+      if (el.classList.contains("complete-class")) {
+        el.remove();
+        console.log(el);
       }
-    });
+    }); //Удалили их с ХТМЛ разметки
+    emptyTaskText();
+  }
+
+  function showAllTasksHandler() {
+    //! Функция обработчик кнопки "All Tasks", при нажатии рендерит все наши таски как и в начале
+    const listGroup = document.querySelectorAll(".list-group-item");
+    console.log(listGroup);
+    [...listGroup].forEach((el) => el.remove());
+    renderAllTasks(objOfTasks);
   }
 })(tasks);
-
-//TODO Сделать копированние объекта только с комплитедами и не показывать их или показывать только те, которые анкамплитед
