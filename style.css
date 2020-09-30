@@ -1,3 +1,13 @@
+body {
+  background: #C6FFDD;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #f7797d, #FBD786, #C6FFDD);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #f7797d, #FBD786, #C6FFDD);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
 .emptyHeader {
   margin: 0 auto;
   margin-top: 40px;
@@ -8,14 +18,22 @@
   font-size: 2.5rem;
   transition: all 1s ease-in;
 }
+
 .header_show {
   display: none;
   transition: all 1s ease-in;
 }
 
 .complete-class {
-  background: green;
-  opacity: 0.85;
+  color: black;
+  background: #AAFFA9;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #11FFBD, #AAFFA9);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #11FFBD, #AAFFA9);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+
 }
 
 .none {
@@ -25,6 +43,10 @@
 .kek {
   display: flex;
   position: relative;
+}
+
+button {
+  /* border-radius: 30px; */
 }
 
 button.btn {
