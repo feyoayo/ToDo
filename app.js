@@ -178,6 +178,11 @@ const tasks = [{
     };
   }
 
+  // function toLocalStorage(titleKey, bodyKey) {
+  //   localStorage.setItem("title", titleKey)
+  //   localStorage.setItem("body", bodyKey)
+  // }
+
   function deleteTask(id) {
     const {
       title
