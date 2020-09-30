@@ -1,34 +1,27 @@
 //Массив задач
-const tasks = [
-  {
+const tasks = [{
     _id: "5d2ca9e2e03d40b326596aa7",
     completed: true,
-    body:
-      "Occaecat non ea quis occaecat ad culpa amet deserunt incididunt elit fugiat pariatur. Exercitation commodo culpa in veniam proident laboris in. Excepteur cupidatat eiusmod dolor consectetur exercitation nulla aliqua veniam fugiat irure mollit. Eu dolor dolor excepteur pariatur aute do do ut pariatur consequat reprehenderit deserunt.\r\n",
+    body: "Occaecat non ea quis occaecat ad culpa amet deserunt incididunt elit fugiat pariatur. Exercitation commodo culpa in veniam proident laboris in. Excepteur cupidatat eiusmod dolor consectetur exercitation nulla aliqua veniam fugiat irure mollit. Eu dolor dolor excepteur pariatur aute do do ut pariatur consequat reprehenderit deserunt.\r\n",
     title: "Eu ea incididunt sunt consectetur fugiat non.",
   },
   {
     _id: "5d2ca9e29c8a94095c1288e0",
     completed: false,
-    body:
-      "Aliquip cupidatat ex adipisicing veniam do tempor. Lorem nulla adipisicing et esse cupidatat qui deserunt in fugiat duis est qui. Est adipisicing ipsum qui cupidatat exercitation. Cupidatat aliqua deserunt id deserunt excepteur nostrud culpa eu voluptate excepteur. Cillum officia proident anim aliquip. Dolore veniam qui reprehenderit voluptate non id anim.\r\n",
-    title:
-      "Deserunt laborum id consectetur pariatur veniam occaecat occaecat tempor voluptate pariatur nulla reprehenderit ipsum.",
+    body: "Aliquip cupidatat ex adipisicing veniam do tempor. Lorem nulla adipisicing et esse cupidatat qui deserunt in fugiat duis est qui. Est adipisicing ipsum qui cupidatat exercitation. Cupidatat aliqua deserunt id deserunt excepteur nostrud culpa eu voluptate excepteur. Cillum officia proident anim aliquip. Dolore veniam qui reprehenderit voluptate non id anim.\r\n",
+    title: "Deserunt laborum id consectetur pariatur veniam occaecat occaecat tempor voluptate pariatur nulla reprehenderit ipsum.",
   },
   {
     _id: "5d2ca9e2e03d40b3232496aa7",
     completed: true,
-    body:
-      "Occaecat non ea quis occaecat ad culpa amet deserunt incididunt elit fugiat pariatur. Exercitation commodo culpa in veniam proident laboris in. Excepteur cupidatat eiusmod dolor consectetur exercitation nulla aliqua veniam fugiat irure mollit. Eu dolor dolor excepteur pariatur aute do do ut pariatur consequat reprehenderit deserunt.\r\n",
+    body: "Occaecat non ea quis occaecat ad culpa amet deserunt incididunt elit fugiat pariatur. Exercitation commodo culpa in veniam proident laboris in. Excepteur cupidatat eiusmod dolor consectetur exercitation nulla aliqua veniam fugiat irure mollit. Eu dolor dolor excepteur pariatur aute do do ut pariatur consequat reprehenderit deserunt.\r\n",
     title: "Eu ea incididunt sunt consectetur fugiat non.",
   },
   {
     _id: "5d2ca9e29c8a94095564788e0",
     completed: false,
-    body:
-      "Aliquip cupidatat ex adipisicing veniam do tempor. Lorem nulla adipisicing et esse cupidatat qui deserunt in fugiat duis est qui. Est adipisicing ipsum qui cupidatat exercitation. Cupidatat aliqua deserunt id deserunt excepteur nostrud culpa eu voluptate excepteur. Cillum officia proident anim aliquip. Dolore veniam qui reprehenderit voluptate non id anim.\r\n",
-    title:
-      "Deserunt laborum id consectetur pariatur veniam occaecat occaecat tempor voluptate pariatur nulla reprehenderit ipsum.",
+    body: "Aliquip cupidatat ex adipisicing veniam do tempor. Lorem nulla adipisicing et esse cupidatat qui deserunt in fugiat duis est qui. Est adipisicing ipsum qui cupidatat exercitation. Cupidatat aliqua deserunt id deserunt excepteur nostrud culpa eu voluptate excepteur. Cillum officia proident anim aliquip. Dolore veniam qui reprehenderit voluptate non id anim.\r\n",
+    title: "Deserunt laborum id consectetur pariatur veniam occaecat occaecat tempor voluptate pariatur nulla reprehenderit ipsum.",
   },
 ];
 //Обворачиваем в самовызывающую функцию, чтобы все что внутри неё, было приватным, и если будет еще js файл, чтобы он вдруг не перезаписал эту логику(переменные, функции)
@@ -74,11 +67,35 @@ const tasks = [
     });
     listContainer.appendChild(fragments);
     completedSeeingTasks();
-    emptyTaskText(objOfTasks);
+    emptyTaskText();
     notEmptyTaskText(objOfTasks);
   }
 
-  function listItemTemplate({ _id, title, body } = {}) {
+  function renderUncompletedTasks(tasksList) {
+    //! Функция отрисовывает только те задачи, которые незавершенные
+    if (!tasksList) {
+      console.error("Give me tasks list, please");
+      return;
+    }
+
+    const fragments = document.createDocumentFragment();
+    Object.values(tasksList).forEach((task) => {
+      if (task.completed == false) {
+        const li = listItemTemplate(task);
+        fragments.appendChild(li);
+        listContainer.appendChild(fragments);
+      }
+    });
+    listContainer.addEventListener("click", hideCompletedTask);
+    emptyTaskText();
+    notEmptyTaskText();
+  }
+
+  function listItemTemplate({
+    _id,
+    title,
+    body
+  } = {}) {
     //! Функция занимается генерацией одного итема списка, добавляя ему классы, стили
     const li = document.createElement("li");
     li.classList.add(
@@ -156,11 +173,15 @@ const tasks = [
     objOfTasks[newTask._id] = newTask; // Добавялем созданную задачу в список всех тасков
 
     //Возвращаем копию этой новый задачи
-    return { ...newTask };
+    return {
+      ...newTask
+    };
   }
 
   function deleteTask(id) {
-    const { title } = objOfTasks[id];
+    const {
+      title
+    } = objOfTasks[id];
     // console.log(objOfTasks[id]);
     const isConfirm = confirm(`Do you want to delete task ? ${title}`);
     if (!isConfirm) return isConfirm;
@@ -173,7 +194,10 @@ const tasks = [
     el.remove();
   }
 
-  function onDeleteHandler({ target }) {
+  function onDeleteHandler({
+    target
+  }) {
+    //! Функция обработчик для кнопки удаления
     if (target.classList.contains("delete-btn")) {
       const parent = target.closest("[data-task-id]");
       const id = parent.dataset.taskId;
@@ -182,7 +206,11 @@ const tasks = [
       emptyTaskText();
     }
   }
-  function onCompleteHandler({ target }) {
+
+  function onCompleteHandler({
+    target
+  }) {
+    //! Функция обработчик для кнопки завершения задачи
     if (target.classList.contains("complete-btn")) {
       const parent = target.closest("[data-task-id]");
       const id = parent.dataset.taskId;
@@ -197,6 +225,20 @@ const tasks = [
       completedSeeingTasks();
     }
   }
+
+  function hideCompletedTask({
+    target
+  }) {
+    //!Функция обработчик для кнопки комплит при активной вкладке Not Completed
+    if (target.classList.contains("complete-btn")) {
+      let parent = target.closest("[data-task-id]");
+      parent.remove();
+      console.log(parent);
+      emptyTaskText();
+      notEmptyTaskText();
+    }
+  }
+
   function completedSeeingTasks() {
     //! Функция собирает завершенные таски и сразу их делает зелеными и ставит в конец списка
     listContainer.querySelectorAll("li").forEach((item) => {
@@ -221,22 +263,22 @@ const tasks = [
       console.log("zero");
     }
   }
-  function notEmptyTaskText(obj) {
+
+  function notEmptyTaskText() {
     //! Функция проверяет: если есть хоть 1 таск то убирает надпись о том, что список задач пустой
-    if (Object.entries(obj).length > 0) {
+    if (Object.entries(objOfTasks).length > 0) {
       emptyTitle.style.display = "none";
     }
   }
+
   function showUncompletedTasks() {
     //! Функция обработчик кнопки "Not Completed" при нажатии рендерит новый объект в котором все задачи еще не выполнены
 
     const listGroup = document.querySelectorAll(".list-group-item"); // Собрали все прорисованные(текущие) Лишки
     [...listGroup].forEach((el) => {
-      if (el.classList.contains("complete-class")) {
-        el.remove();
-        console.log(el);
-      }
+      el.remove();
     }); //Удалили их с ХТМЛ разметки
+    renderUncompletedTasks(objOfTasks);
     emptyTaskText();
   }
 
@@ -246,6 +288,8 @@ const tasks = [
     console.log(listGroup);
     [...listGroup].forEach((el) => el.remove());
     renderAllTasks(objOfTasks);
+    //Обязательно убираем событие для кнопки комплит( иначе будут удаляться все темплейты при нажатии)
+    listContainer.removeEventListener("click", hideCompletedTask);
   }
 })(tasks);
 
